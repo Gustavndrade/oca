@@ -1,0 +1,16 @@
+{
+  "name": "oca_flow",
+  "version": "1.0.0",
+  "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev:api": "echo \"Rodando API\" && pnpm -F api dev",
+    "dev:web": "echo \"Rodando web (CS)\" && pnpm -F web dev"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}
