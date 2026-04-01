@@ -1,10 +1,14 @@
 {
   "name": "oca_flow",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev:api": "echo \"Rodando API\" && pnpm -F api dev",
+    "dev:web": "echo \"Rodando web (CS)\" && pnpm -F web dev"
   },
   "keywords": [],
   "author": "",
