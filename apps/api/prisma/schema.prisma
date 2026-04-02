@@ -1,8 +1,198 @@
 generator client {
-  provider = "prisma-client"
-  output   = "../generated/prisma"
+  provider = "prisma-client-js"
 }
 
 datasource db {
   provider = "postgresql"
+}
+
+enum ReservationStatus {
+  PENDING
+  CONFIRMED
+  CANCELLED
+}
+
+enum PropertyType {
+  HOTEL
+  POUSADA
+  CASA
+  APARTAMENTO
+}
+
+enum FinancialType {
+  INCOME
+  EXPENSE
+}
+
+enum PaymentType {
+  CASH
+  CREDIT_CARD
+  DEBIT_CARD
+  PIX
+  TRANSFER
+}
+
+enum UserRole {
+  ADMIN
+  MANAGER
+  STAFF
+}
+
+enum DocumentType {
+  CPF
+  RG
+  CNH
+  PASSPORT
+}
+
+model Organization {
+  id            String       @id @default(uuid())
+  document      String       @unique
+  name      String
+  cellphone String
+  email String
+  owner String
+
+  ducument_type DocumentType
+  users UserOrganization[]
+}
+
+model User {
+  id        String   @id @default(uuid())
+  name      String
+  cpf       String?  @unique
+  cnpj      String?  @unique
+  password  String
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+
+  reservations Reservation[]
+  properties   UserProperty[]
+  organizations UserOrganization[]
+}
+
+model Property {
+  id        String       @id @default(uuid())
+  name      String
+  type      PropertyType
+  isActive  Boolean      @default(true)
+  createdAt DateTime     @default(now())
+
+  units        Unit[]
+  reservations Reservation[]
+  users        UserProperty[]
+  categories   FinancialCategory[]
+  transactions FinancialTransaction[]
+
+  organizationId String
+}
+
+model Unit {
+  id          String   @id @default(uuid())
+  propertyId  String
+  identifier  String
+  description String?
+  capacity    Int
+  notes       String?
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+
+  property     Property      @relation(fields: [propertyId], references: [id])
+  reservations Reservation[]
+}
+
+model Reservation {
+  id          String            @id @default(uuid())
+  propertyId  String
+  unitId      String
+  userId      String
+  checkIn     DateTime
+  checkOut    DateTime
+  status      ReservationStatus
+  totalAmount Float
+  createdAt   DateTime          @default(now())
+
+  property Property @relation(fields: [propertyId], references: [id])
+  unit     Unit     @relation(fields: [unitId], references: [id])
+  user     User     @relation(fields: [userId], references: [id])
+
+  guests       ReservationGuests[]
+  payments     Payment[]
+  transactions FinancialTransaction[]
+}
+
+model Guest {
+  id           String   @id @default(uuid())
+  fullName     String
+  document     String
+  documentType DocumentType
+  email        String?
+  phone        String?
+  createdAt    DateTime @default(now())
+
+  reservations ReservationGuests[]
+}
+
+model ReservationGuests {
+  reservationId String
+  guestId       String
+
+  reservation Reservation @relation(fields: [reservationId], references: [id])
+  guest       Guest       @relation(fields: [guestId], references: [id])
+
+  @@id([reservationId, guestId])
+}
+
+model UserProperty {
+  userId     String
+  propertyId String
+  role       UserRole
+  user     User     @relation(fields: [userId], references: [id])
+  property Property @relation(fields: [propertyId], references: [id])
+
+  @@id([userId, propertyId])
+}
+
+model UserOrganization {
+  userId String
+  organizationId     String
+  role       UserRole
+  user     User     @relation(fields: [userId], references: [id])
+  organization Organization @relation(fields: [organizationId], references: [id])
+  @@id([userId, organizationId])
+
+}
+
+model FinancialCategory {
+  id         String        @id @default(uuid())
+  propertyId String
+  name       String
+  type       FinancialType
+
+  property     Property               @relation(fields: [propertyId], references: [id])
+  transactions FinancialTransaction[]
+}
+
+model FinancialTransaction {
+  id            String   @id @default(uuid())
+  propertyId    String
+  categoryId    String
+  reservationId String?
+  amount        Float
+  description   String?
+  date          DateTime
+
+  property    Property          @relation(fields: [propertyId], references: [id])
+  category    FinancialCategory @relation(fields: [categoryId], references: [id])
+  reservation Reservation?      @relation(fields: [reservationId], references: [id])
+}
+
+model Payment {
+  id            String      @id @default(uuid())
+  reservationId String
+  value         Float
+  paymentType   PaymentType
+  paidAt        DateTime
+
+  reservation Reservation @relation(fields: [reservationId], references: [id])
 }
