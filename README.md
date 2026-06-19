@@ -2,7 +2,7 @@
 
 **SaaS de gestão de propriedades hoteleiras** — Hotéis, Pousadas e Casas de Temporada.
 
-Monorepo com **pnpm workspaces** + **TypeScript** + **Turborepo**.
+Monorepo com **pnpm workspaces** + **TypeScript**.
 
 ---
 
@@ -64,8 +64,7 @@ oca_flow/
 ├── .npmrc                            # Configuração do pnpm
 ├── package.json                      # Root — scripts globais
 ├── pnpm-workspace.yaml               # Definição dos workspaces
-├── tsconfig.json                     # TypeScript config raiz
-└── turbo.json                        # Turborepo — pipeline de build
+└── tsconfig.json                     # TypeScript config raiz
 ```
 
 ---
@@ -197,7 +196,7 @@ pnpm --filter @oca/database db:migrate
 pnpm dev
 ```
 
-Isso usa o **Turborepo** para iniciar simultaneamente:
+Isso usa o **concurrently** para iniciar simultaneamente:
 - **API**: `http://localhost:3333`
 - **Web**: `http://localhost:3000`
 - **Swagger Docs**: `http://localhost:3333/docs`
@@ -227,7 +226,7 @@ pnpm build
 | `pnpm lint`       | Roda ESLint em todos os workspaces                  |
 | `pnpm typecheck`  | Verificação de tipos TypeScript                     |
 | `pnpm format`     | Formata código com Prettier                         |
-| `pnpm clean`      | Remove `node_modules`, `dist`, `.next`, `.turbo`    |
+| `pnpm clean`      | Remove `node_modules`, `dist`, `.next`              |
 | `pnpm db:generate`| Gera o Prisma Client                                |
 | `pnpm db:push`    | Sincroniza schema com o banco                       |
 | `pnpm db:studio`  | Abre o Prisma Studio (GUI do banco)                 |
@@ -237,13 +236,13 @@ pnpm build
 
 | Camada             | Tecnologia                         |
 |--------------------|------------------------------------|
-| **Monorepo**       | pnpm workspaces + Turborepo        |
+| **Monorepo**       | pnpm workspaces                    |
 | **Linguagem**      | TypeScript 5.x (strict mode)       |
-| **Backend**        | Fastify 5                          |
+| **Backend**        | NestJS 11                          |
 | **ORM**            | Prisma 6 (PostgreSQL)              |
 | **Validação**      | Zod                                |
-| **Auth**           | JWT (`@fastify/jwt`)               |
-| **Docs API**       | Swagger (`@fastify/swagger`)       |
+| **Auth**           | JWT                                |
+| **Docs API**       | Swagger                            |
 | **Frontend**       | Next.js 15 (App Router) + React 19 |
 | **CI/CD**          | GitHub Actions                     |
 

@@ -7,7 +7,6 @@ module.exports = [
       "node_modules/**",
       "dist/**",
       ".next/**",
-      ".turbo/**",
       "coverage/**",
     ],
   },

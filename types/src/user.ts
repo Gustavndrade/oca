@@ -29,15 +29,13 @@ export interface UserProperty {
 }
 
 export interface LoginInput {
-  cpf?: string;
-  cnpj?: string;
+  document: string;
   password: string;
 }
 
 export interface RegisterInput {
   name: string;
-  cpf?: string;
-  cnpj?: string;
+  document: string;
   password: string;
 }
 

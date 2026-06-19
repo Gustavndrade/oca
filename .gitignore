@@ -6,9 +6,6 @@ dist/
 .next/
 out/
 
-# Turbo
-.turbo/
-
 # Environment
 .env
 .env.local
