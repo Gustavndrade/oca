@@ -23,43 +23,41 @@ oca_flow/
 │       ├── next.config.ts
 │       ├── package.json
 │       └── tsconfig.json
+├── config/                       # Configurações compartilhadas
+│   ├── eslint/
+│   │   └── base.js              # ESLint flat config base
+│   ├── typescript/
+│   │   ├── base.json            # TS config base (strict, ES2022)
+│   │   ├── node.json            # TS config para Node.js (API)
+│   │   └── nextjs.json          # TS config para Next.js (Web)
+│   └── package.json
 │
-├── packages/
-│   ├── config/                       # Configurações compartilhadas
-│   │   ├── eslint/
-│   │   │   └── base.js              # ESLint flat config base
-│   │   ├── typescript/
-│   │   │   ├── base.json            # TS config base (strict, ES2022)
-│   │   │   ├── node.json            # TS config para Node.js (API)
-│   │   │   └── nextjs.json          # TS config para Next.js (Web)
-│   │   └── package.json
-│   │
-│   ├── types/                        # @oca/types — Tipos do domínio
-│   │   ├── src/
-│   │   │   ├── index.ts             # Barrel export
-│   │   │   ├── organization.ts      # Organization
-│   │   │   ├── user.ts              # User, Role, Auth
-│   │   │   ├── property.ts          # Property, PropertyType
-│   │   │   ├── unit.ts              # Unit (quarto/suíte/casa)
-│   │   │   ├── reservation.ts       # Reservation, ReservationStatus
-│   │   │   ├── guest.ts             # Guest, DocumentType
-│   │   │   ├── payment.ts           # Payment, PaymentType, PaymentStatus
-│   │   │   ├── financial.ts         # FinancialCategory, FinancialTransaction
-│   │   │   └── api.ts              # ApiResponse, PaginatedResponse
-│   │   ├── package.json
-│   │   └── tsconfig.json
-│   │
-│   ├── utils/                        # @oca/utils — Funções utilitárias
-│   │   ├── src/                      # Formatação, validação
-│   │   ├── package.json
-│   │   └── tsconfig.json
-│   │
-│   └── database/                     # @oca/database — Prisma ORM
-│       ├── prisma/
-│       │   └── schema.prisma         # Schema do banco de dados
-│       ├── src/                      # Re-export do PrismaClient
-│       ├── package.json
-│       └── tsconfig.json
+├── types/                        # @oca/types — Tipos do domínio
+│   ├── src/
+│   │   ├── index.ts             # Barrel export
+│   │   ├── organization.ts      # Organization
+│   │   ├── user.ts              # User, Role, Auth
+│   │   ├── property.ts          # Property, PropertyType
+│   │   ├── unit.ts              # Unit (quarto/suíte/casa)
+│   │   ├── reservation.ts       # Reservation, ReservationStatus
+│   │   ├── guest.ts             # Guest, DocumentType
+│   │   ├── payment.ts           # Payment, PaymentType, PaymentStatus
+│   │   ├── financial.ts         # FinancialCategory, FinancialTransaction
+│   │   └── api.ts              # ApiResponse, PaginatedResponse
+│   ├── package.json
+│   └── tsconfig.json
+│
+├── utils/                        # @oca/utils — Funções utilitárias
+│   ├── src/                      # Formatação, validação
+│   ├── package.json
+│   └── tsconfig.json
+│
+├── database/                     # @oca/database — Prisma ORM
+│   ├── prisma/
+│   │   └── schema.prisma         # Schema do banco de dados
+│   ├── src/                      # Re-export do PrismaClient
+│   ├── package.json
+│   └── tsconfig.json
 │
 ├── .github/workflows/ci.yml          # GitHub Actions CI
 ├── .gitignore
@@ -100,10 +98,10 @@ O OCA Flow é organizado como um **monorepo** com 2 aplicações e 4 pacotes com
 
 | Pacote | Nome npm | Descrição |
 |--------|----------|-----------|
-| `packages/types` | `@oca/types` | Tipos TypeScript do domínio, compartilhados entre API e Web |
-| `packages/utils` | `@oca/utils` | Funções utilitárias (formatação BRL, validação CPF/CNPJ, datas) |
-| `packages/database` | `@oca/database` | Schema Prisma e re-export do PrismaClient |
-| `packages/config` | `@oca/config` | Configurações de TypeScript e ESLint compartilhadas |
+| `types` | `@oca/types` | Tipos TypeScript do domínio, compartilhados entre API e Web |
+| `utils` | `@oca/utils` | Funções utilitárias (formatação BRL, validação CPF/CNPJ, datas) |
+| `database` | `@oca/database` | Schema Prisma e re-export do PrismaClient |
+| `config` | `@oca/config` | Configurações de TypeScript e ESLint compartilhadas |
 
 ### Modelo de dados
 
