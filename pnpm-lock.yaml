@@ -29,9 +29,6 @@ importers:
       '@nestjs/platform-express':
         specifier: ^11.0.1
         version: 11.1.27(@nestjs/common@11.1.27(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/core@11.1.27)
-      '@oca/database':
-        specifier: workspace:*
-        version: link:../../database
       '@oca/types':
         specifier: workspace:*
         version: link:../../types
@@ -75,6 +72,9 @@ importers:
       '@types/node':
         specifier: ^22.10.0
         version: 22.19.21
+      prisma:
+        specifier: ^6.0.0
+        version: 6.19.3(typescript@5.9.3)
       tsconfig-paths:
         specifier: ^4.2.0
         version: 4.2.0
@@ -123,25 +123,6 @@ importers:
         version: 5.9.3
 
   config: {}
-
-  database:
-    dependencies:
-      '@prisma/client':
-        specifier: ^6.0.0
-        version: 6.19.3(prisma@6.19.3(typescript@5.9.3))(typescript@5.9.3)
-    devDependencies:
-      '@oca/config':
-        specifier: workspace:*
-        version: link:../config
-      prisma:
-        specifier: ^6.0.0
-        version: 6.19.3(typescript@5.9.3)
-      tsx:
-        specifier: ^4.19.0
-        version: 4.22.4
-      typescript:
-        specifier: ^5.8.0
-        version: 5.9.3
 
   types:
     devDependencies:
