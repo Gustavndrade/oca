@@ -1,0 +1,229 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+
+  directUrl = env("DIRECT_URL")
+  url       = env("DATABASE_URL")
+}
+
+enum DocumentType {
+  CPF
+  RG
+  CNH
+  PASSPORT
+}
+
+enum UserDocumentType {
+  CPF
+  CNPJ
+}
+
+enum Role {
+  ADMIN
+  MANAGER
+  STAFF
+}
+
+enum PropertyType {
+  HOTEL
+  VACATION_HOUSE
+  INN
+}
+
+enum PaymentType {
+  CREDIT_CARD
+  DEBIT_CARD
+  PIX
+  MONEY
+}
+
+enum ReservationStatus {
+  PENDING
+  CONFIRMED
+  CANCELLED
+}
+
+enum FinancialType {
+  INCOME
+  EXPENSE
+}
+
+enum PaymentStatus {
+  PENDING
+  PAID
+  CANCELLED
+}
+
+model Organization {
+  id    String @id @default(uuid())
+  name  String @unique
+  email String @unique
+  cnpj  String @unique
+  phone String
+
+  createdAt DateTime @default(now())
+  isActive  Boolean  @default(true)
+
+  userOrganizations UserOrganization[]
+  properties        Property[]
+}
+
+model User {
+  id       String  @id @default(uuid())
+  name     String
+  document String? @unique
+  password String
+
+  createdAt DateTime @default(now())
+  isActive  Boolean  @default(true)
+
+  reservations Reservation[]
+
+  organization   UserOrganization[]
+  userProperties UserProperty[]
+}
+
+model Property {
+  id        String       @id @default(uuid())
+  name      String
+  type      PropertyType
+  isActive  Boolean      @default(true)
+  createdAt DateTime     @default(now())
+
+  financialCategories FinancialCategory[]
+
+  organizationId        String
+  organization          Organization           @relation(fields: [organizationId], references: [id])
+  reservations          Reservation[]
+  units                 Unit[]
+  userProperties        UserProperty[]
+  financialTransactions FinancialTransaction[]
+}
+
+model UserOrganization {
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id])
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id])
+
+  role Role
+
+  @@id([organizationId, userId])
+}
+
+model Unit {
+  id          String   @id @default(uuid())
+  capacity    Int
+  identifier  String
+  notes       String?
+  description String
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+
+  reservations Reservation[]
+
+  propertyId String
+  property   Property @relation(fields: [propertyId], references: [id])
+}
+
+model Reservation {
+  id          String            @id @default(uuid())
+  checkin     DateTime
+  checkout    DateTime
+  totalAmount Float
+  createdAt   DateTime          @default(now())
+  status      ReservationStatus @default(PENDING)
+
+  payments              Payment[]
+  guests                ReservationGuests[]
+  financialTransactions FinancialTransaction[]
+
+  propertyId String
+  property   Property @relation(fields: [propertyId], references: [id])
+
+  unitId String
+  unit   Unit   @relation(fields: [unitId], references: [id])
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id])
+}
+
+model Guest {
+  id           String       @id @default(uuid())
+  fullName     String
+  document     String
+  documentType DocumentType
+  email        String?
+  phone        String?
+  createdAt    DateTime     @default(now())
+
+  guests ReservationGuests[]
+}
+
+model ReservationGuests {
+  reservationId String
+  reservation   Reservation @relation(fields: [reservationId], references: [id])
+
+  guestId String
+  guest   Guest  @relation(fields: [guestId], references: [id])
+
+  @@id([reservationId, guestId])
+}
+
+model Payment {
+  id          String        @id @default(uuid())
+  value       Float
+  paymentType PaymentType
+  paidAt      DateTime?
+  status      PaymentStatus
+
+  reservationId String
+  reservation   Reservation @relation(fields: [reservationId], references: [id])
+
+  financialTransaction FinancialTransaction[]
+}
+
+model UserProperty {
+  userId String
+  user   User   @relation(fields: [userId], references: [id])
+
+  propertyId String
+  property   Property @relation(fields: [propertyId], references: [id])
+
+  @@id([userId, propertyId])
+}
+
+model FinancialCategory {
+  id   String        @id @default(uuid())
+  name String
+  type FinancialType
+
+  propertyId String
+  property   Property @relation(fields: [propertyId], references: [id])
+
+  transactions FinancialTransaction[]
+}
+
+model FinancialTransaction {
+  id String @id @default(uuid())
+
+  amount      Float
+  description String?
+  date        DateTime @default(now())
+
+  propertyId String
+  property   Property @relation(fields: [propertyId], references: [id])
+
+  categoryId String
+  category   FinancialCategory @relation(fields: [categoryId], references: [id])
+
+  paymentId String?
+  payment   Payment? @relation(fields: [paymentId], references: [id])
+
+  reservationId String?
+  reservation   Reservation? @relation(fields: [reservationId], references: [id])
+}

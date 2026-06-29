@@ -1,0 +1,6 @@
+packages:
+  - "apps/*"
+  - "database"
+  - "utils"
+  - "types"
+  - "config"
