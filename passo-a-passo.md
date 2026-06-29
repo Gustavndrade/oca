@@ -7,7 +7,7 @@
 
 ## Passo 1 — Cadastro de usuário (`POST /auth/register`)
 
-- [ ] 1.1. Criar `RegisterDto` com validação dos campos (`name`, `document`, `password`)
+- [ ] 1.1. Criar `RegisterDto` com validação dos campos necessários
 - [ ] 1.2. No `UsersService.create()`, buscar se já existe usuário com o mesmo `document`
 - [ ] 1.3. Se existir, lançar `ConflictException` com mensagem genérica
 - [ ] 1.4. Gerar hash da senha com `bcrypt.hash(password, 10)`

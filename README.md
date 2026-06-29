@@ -12,8 +12,10 @@ Monorepo com **pnpm workspaces** + **TypeScript**.
 oca_flow/
 │
 ├── apps/
-│   ├── api/                          # Backend — Fastify + Prisma
+│   ├── api/                          # Backend — NestJS + Prisma
 │   │   ├── src/                      # Código-fonte da API
+│   │   ├── prisma/                   # Banco de dados (Schema e Migrations)
+│   │   │   └── schema.prisma
 │   │   ├── package.json
 │   │   └── tsconfig.json
 │   │
@@ -52,13 +54,6 @@ oca_flow/
 │   ├── package.json
 │   └── tsconfig.json
 │
-├── database/                     # @oca/database — Prisma ORM
-│   ├── prisma/
-│   │   └── schema.prisma         # Schema do banco de dados
-│   ├── src/                      # Re-export do PrismaClient
-│   ├── package.json
-│   └── tsconfig.json
-│
 ├── .github/workflows/ci.yml          # GitHub Actions CI
 ├── .gitignore
 ├── .npmrc                            # Configuração do pnpm
@@ -73,7 +68,7 @@ oca_flow/
 
 ### Visão geral
 
-O OCA Flow é organizado como um **monorepo** com 2 aplicações e 4 pacotes compartilhados:
+O OCA Flow é organizado como um **monorepo** com 2 aplicações e 3 pacotes compartilhados:
 
 ```
 ┌─────────────────────────────────────────────────┐
@@ -81,14 +76,14 @@ O OCA Flow é organizado como um **monorepo** com 2 aplicações e 4 pacotes com
 │                                                 │
 │  ┌──────────┐    ┌──────────┐                   │
 │  │  API      │    │  Web     │    ← apps        │
-│  │ (Fastify) │    │ (Next.js)│                  │
+│  │ (NestJS)  │    │ (Next.js)│                  │
 │  └────┬──┬──┘    └──┬───┬──┘                    │
 │       │  │          │   │                       │
 │  ┌────▼──▼──────────▼───▼──┐                    │
 │  │     Pacotes compartilhados                   │
-│  │  ┌────────┐ ┌─────┐ ┌──────────┐ ┌───────┐   │
-│  │  │ types  │ │utils│ │ database │ │config │   │
-│  │  └────────┘ └─────┘ └──────────┘ └───────┘   │
+│  │  ┌────────┐ ┌─────┐ ┌───────┐                 │
+│  │  │ types  │ │utils│ │config │                 │
+│  │  └────────┘ └─────┘ └───────┘                 │
 │  └─────────────────────────────────────────┘    │
 └─────────────────────────────────────────────────┘
 ```
@@ -99,7 +94,6 @@ O OCA Flow é organizado como um **monorepo** com 2 aplicações e 4 pacotes com
 |--------|----------|-----------|
 | `types` | `@oca/types` | Tipos TypeScript do domínio, compartilhados entre API e Web |
 | `utils` | `@oca/utils` | Funções utilitárias (formatação BRL, validação CPF/CNPJ, datas) |
-| `database` | `@oca/database` | Schema Prisma e re-export do PrismaClient |
 | `config` | `@oca/config` | Configurações de TypeScript e ESLint compartilhadas |
 
 ### Modelo de dados
@@ -183,7 +177,7 @@ pnpm db:generate
 pnpm db:push
 
 # Ou usar migrations (recomendado para produção)
-pnpm --filter @oca/database db:migrate
+pnpm --filter @oca/api db:migrate
 ```
 
 ---
@@ -256,7 +250,9 @@ Os pacotes compartilhados são importados via `workspace:*`:
 // Na API ou no Web
 import type { Reservation, Guest } from "@oca/types";
 import { formatCurrency, isValidCPF } from "@oca/utils";
-import { PrismaClient } from "@oca/database";
+
+// Na API (Prisma Client gerado localmente)
+import { PrismaClient } from "@prisma/client";
 ```
 
 ---

@@ -12,9 +12,9 @@
     "typecheck": "pnpm --filter \"*\" typecheck",
     "format": "prettier --write \"**/*.{ts,tsx,js,jsx,json,md}\"",
     "clean": "pnpm --filter \"*\" clean && rm -rf node_modules",
-    "db:generate": "pnpm --filter @oca/database db:generate",
-    "db:push": "pnpm --filter @oca/database db:push",
-    "db:studio": "pnpm --filter @oca/database db:studio"
+    "db:generate": "pnpm --filter @oca/api db:generate",
+    "db:push": "pnpm --filter @oca/api db:push",
+    "db:studio": "pnpm --filter @oca/api db:studio"
   },
   "devDependencies": {
     "concurrently": "^9.0.0",
