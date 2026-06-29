@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../../prisma/prisma.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -6,9 +6,17 @@ import * as bcrypt from 'bcryptjs';
 
 @Injectable()
 export class UserService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(private readonly prisma: PrismaService) { }
 
   async create(dto: CreateUserDto) {
+    const existing = await this.prisma.user.findUnique({
+      where: { document: dto.document },
+    });
+
+    if (existing) {
+      throw new ConflictException('Não foi possível concluir o cadastro. Verifique os dados e tente novamente.');
+    }
+
     const hashedPassword = await bcrypt.hash(dto.password, 10);
     return this.prisma.user.create({
       data: { ...dto, password: hashedPassword },
