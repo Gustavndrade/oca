@@ -9,4 +9,5 @@ export class UnitEntity implements Unit {
   isActive: boolean;
   createdAt: Date;
   propertyId: string;
+  defaultDailyPrice: number;
 }
