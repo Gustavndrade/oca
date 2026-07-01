@@ -9,4 +9,6 @@ export class PropertyEntity implements Property {
   isActive: boolean;
   createdAt: Date;
   organizationId: string;
+  defaultCheckinTime: string;
+  defaultCheckoutTime: string;
 }
