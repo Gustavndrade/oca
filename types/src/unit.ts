@@ -11,6 +11,7 @@ export interface Unit {
   isActive: boolean;
   createdAt: Date;
   propertyId: string;
+  defaultDailyPrice: number;
 }
 
 export interface CreateUnitInput {
@@ -19,6 +20,7 @@ export interface CreateUnitInput {
   description: string;
   notes?: string;
   propertyId: string;
+  defaultDailyPrice?: number;
 }
 
 export interface UpdateUnitInput {
@@ -27,4 +29,5 @@ export interface UpdateUnitInput {
   description?: string;
   notes?: string;
   isActive?: boolean;
+  defaultDailyPrice?: number;
 }
