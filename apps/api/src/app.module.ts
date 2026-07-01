@@ -26,4 +26,4 @@ import { FinancialModule } from './modules/financial/financial.module';
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule {}
+export class AppModule { }
