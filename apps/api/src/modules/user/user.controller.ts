@@ -12,41 +12,25 @@ import { UserService } from './user.service';
 import { CreateUserSchema, CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserSchema, UpdateUserDto, UpdateProfileSchema, UpdateProfileDto } from './dto/update-user.dto';
 import { ZodValidationPipe } from '../../common/pipes/zod-validation.pipe';
+import { UserEntity } from './entities/user.entity';
 
-@Controller('users')
+@Controller('user')
 export class UserController {
-  constructor(private readonly userService: UserService) {}
+  constructor(private readonly userService: UserService) { }
 
   @Post()
   @UsePipes(new ZodValidationPipe(CreateUserSchema))
   create(@Body() dto: CreateUserDto) {
-    return this.userService.create(dto);
-  }
-
-  @Get()
-  findAll() {
-    return this.userService.findAll();
+    return this.userService.createUser(dto);
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.userService.findOne(id);
+  async findUser(@Param("id") id: string) {
+    return this.userService.findUser(id);
   }
 
   @Patch(':id')
-  @UsePipes(new ZodValidationPipe(UpdateUserSchema))
-  update(@Param('id') id: string, @Body() dto: UpdateUserDto) {
-    return this.userService.update(id, dto);
-  }
-
-  @Patch(':id/profile')
-  @UsePipes(new ZodValidationPipe(UpdateProfileSchema))
-  updateProfile(@Param('id') id: string, @Body() dto: UpdateProfileDto) {
-    return this.userService.updateProfile(id, dto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.userService.remove(id);
+  async deleteUser(@Param("id") id: string) {
+    return this.userService.deleteUser(id);
   }
 }

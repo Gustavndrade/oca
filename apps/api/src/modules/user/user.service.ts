@@ -3,12 +3,13 @@ import { PrismaService } from '../../prisma/prisma.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto, UpdateProfileDto } from './dto/update-user.dto';
 import * as argon2 from 'argon2';
+import { User } from '@prisma/client';
 
 @Injectable()
 export class UserService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(private readonly prisma: PrismaService) { }
 
-  async create(dto: CreateUserDto) {
+  async createUser(dto: CreateUserDto) {
     const existing = await this.prisma.user.findUnique({
       where: { document: dto.document },
     });
@@ -25,70 +26,68 @@ export class UserService {
     });
   }
 
-  findAll() {
-    return this.prisma.user.findMany({
-      select: {
-        id: true,
-        name: true,
-        document: true,
-        createdAt: true,
-        isActive: true,
-      },
-    });
-  }
+  async findUser(id: string) {
 
-  async findOne(id: string) {
-    const user = await this.prisma.user.findUnique({
-      where: { id },
-      include: { organization: true, userProperties: true },
-    });
+    try {
+      const user = await this.prisma.user.findUnique({
+        where: { id: id },
+        include: { organization: true, userProperties: true },
+      });
 
-    if (!user) throw new NotFoundException(`Usuário ${id} não encontrado.`);
+      console.log("user:", user);
+      return user;
+    } catch (error) {
+      console.log("error:", error);
 
-    return user;
-  }
-
-  async update(id: string, dto: UpdateUserDto) {
-    await this.findOne(id);
-
-    const data: UpdateUserDto & { password?: string } = { ...dto };
-
-    if (dto.password) {
-      data.password = await argon2.hash(dto.password);
+      throw new NotFoundException(`Usuário ${id} não encontrado.`);
     }
 
-    return this.prisma.user.update({ where: { id }, data });
   }
 
-  async updateProfile(id: string, dto: UpdateProfileDto) {
-    const user = await this.findOne(id);
+  async deleteUser(id: string): Promise<User> {
+    await this.findUser(id);
 
-    const data: { name?: string; password?: string } = {};
-
-    if (dto.name) {
-      data.name = dto.name;
-    }
-
-    if (dto.newPassword && dto.oldPassword) {
-      const isPasswordValid = await argon2.verify(user.password, dto.oldPassword);
-      if (!isPasswordValid) {
-        throw new BadRequestException('A senha antiga informada está incorreta.');
-      }
-      data.password = await argon2.hash(dto.newPassword);
-    }
-
-    return this.prisma.user.update({
-      where: { id },
-      data,
-    });
-  }
-
-  async remove(id: string) {
-    await this.findOne(id);
-
-    return this.prisma.user.update({
+    const deletedUser = this.prisma.user.update({
       where: { id },
       data: { isActive: false },
     });
+
+    return deletedUser
   }
+
+  // findAllUsers() {
+  //   return this.prisma.user.findMany({
+  //     select: {
+  //       id: true,
+  //       name: true,
+  //       document: true,
+  //       createdAt: true,
+  //       isActive: true,
+  //     },
+  //   });
+  // }
+
+  // async updateProfile(id: string, dto: UpdateProfileDto) {
+  //   const user = await this.findUser(id);
+
+  //   const data: { name?: string; password?: string } = {};
+
+  //   if (dto.name) {
+  //     data.name = dto.name;
+  //   }
+
+  //   if (dto.newPassword && dto.oldPassword) {
+  //     const isPasswordValid = await argon2.verify(user.password, dto.oldPassword);
+  //     if (!isPasswordValid) {
+  //       throw new BadRequestException('A senha antiga informada está incorreta.');
+  //     }
+  //     data.password = await argon2.hash(dto.newPassword);
+  //   }
+
+  //   return this.prisma.user.update({
+  //     where: { id },
+  //     data,
+  //   });
+  // }
+
 }
